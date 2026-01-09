@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      body {
+        font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+        padding: 15px;
+      }
+      #messages {
+        border: 1px solid #ccc;
+        padding: 10px;
+        height: 200px;
+        overflow-y: auto;
+        margin-bottom: 10px;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Чат для общения</h1>
+    <div id="messages"></div>
+
+    <input type="text" id="messageInput" placeholder="Введите ваше сообщение" />
+    <button id="sendBtn">Отправить</button>
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+      // Соединение с сервером
+      const socket = io()
+
+      const messagesDiv = document.getElementById('messages')
+      const input = document.getElementById('messageInput')
+      const sendBtn = document.getElementById('sendBtn')
+
+      //Обработчик для кнопки
+      sendBtn.addEventListener('click', () => {
+        const text = input.value
+
+        socket.emit('chatMessage', text)
+        input.value = ''
+      })
+      // Ответ от сервера
+      socket.on('messageFromServer', (msg) => {
+        const p = document.createElement('p')
+        p.textContent = msg
+        messagesDiv.appendChild(p)
+      })
+    </script>
+  </body>
+</html>
